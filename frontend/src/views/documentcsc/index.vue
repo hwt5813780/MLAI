@@ -126,7 +126,7 @@ export default {
 
 <style scoped>
   .tip {
-    font-family: 宋体;
+    font-family: Helvetica Neue, Arial, Helvetica, sans-serif;
   font-size: 18px;
 	font-weight: bold;
 	margin-bottom: 20px;

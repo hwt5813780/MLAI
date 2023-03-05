@@ -60,36 +60,19 @@ export const constantRoutes = [
     component: Layout,
     redirect: '/csc/onlinecsc',
     name: 'Csc',
-    meta: { title: 'Chat', icon: 'el-icon-s-help' },
+    meta: { title: '信息提取', icon: 'el-icon-s-help' },
     children: [
       {
         path: 'onlinecsc',
         name: 'Onlinecsc',
         component: () => import('@/views/onlinecsc/index'),
-        meta: { title: 'ChatGPT', icon: 'el-icon-edit' }
-      },
-      {
-        path: 'documentcsc',
-        name: 'Documentcsc',
-        component: () => import('@/views/documentcsc/index'),
-        meta: { title: '文档纠错', icon: 'el-icon-document' }
+        meta: { title: '文本提取'}
       },
       {
         path: 'imagecsc',
         name: 'Imagecsc',
         component: () => import('@/views/imagecsc/index'),
-        meta: { title: '图片纠错', icon: 'el-icon-camera-solid' }
-      }
-    ]
-  },
-
-  {
-    path: 'external-link',
-    component: Layout,
-    children: [
-      {
-        path: '',
-        meta: { title: '请勿点击', icon: 'link' }
+        meta: { title: '图片提取'}
       }
     ]
   },

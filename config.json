@@ -1,0 +1,12 @@
+{
+    "server": "jp.j.v4.2.kiki789.com",
+    "server_port": 31400,
+    "password": "yT6Am5",
+    "method": "aes-128-ctr",
+    "protocol": "auth_aes128_md5",
+    "protocol_param": "178273:Rjnz10",
+    "obfs": "tls1.2_ticket_auth",
+    "obfs_param": "e3283178273.microsoft.com",
+    "local_address": "127.0.0.1",
+    "local_port": 1080
+}

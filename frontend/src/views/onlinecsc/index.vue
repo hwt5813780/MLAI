@@ -1,34 +1,30 @@
 <template>
   <div class="app-container">
+    <el-col :span="12">
     <div class="tip">
-      请输入需要提取的合同文本:
+      请输入需要提取的文本:
     </div>
     <el-input v-model="textarea" type="textarea" :disabled="stage" :rows="11" placeholder="请输入" clearable />
-    <div class="tip">
+    <div class="tip" style="padding-top:10px">
       请输入提取的信息类型（用逗号隔开）:
     </div>
-    <el-input v-model="input" type="input" :disabled="stage" :rows="11" placeholder="请输入" clearable />
-    <div style="text-align: center; padding-top:10px;padding-bottom:10px;">
-      <el-upload
-        ref="upload"
-        action="/"
-        accept=".txt"
-        :before-upload="beforeUpload"
-        :show-file-list="false"
-        :default-file-list="fileList"
-      >
-        <el-button slot="trigger" type="primary" round style="margin-left:10px;margin-right:10px;">导入txt</el-button>
-        <el-button type="info" round style="margin-left:10px;margin-right:10px;" @click="clear()">清空</el-button>
-        <el-button type="success" round @click="errorCorrect()">发送</el-button>
-        <el-button type="primary" round @click="saveResult()">保存结果</el-button>
-      </el-upload>
+    <el-input v-model="input" type="input" :disabled="stage" :rows="11" placeholder="请输入" clearable/>
+    <div style="padding-top:10px;padding-bottom:10px;">
+      <el-button type="success" @click="errorCorrect()">开始提取</el-button>
+      <el-button type="info" style="margin-left:24px;margin-top:16px;" @click="clear()">清空</el-button>
     </div>
 
     <div v-show="visible" class="tip">
       ChatGPT:
     </div>
     <el-input v-show="visible" v-model="result" type="textarea" :rows="11" />
-
+    </el-col>
+    <el-col :span="12">
+    <el-table v-loading="loading" :data="tableData" style="width: 100%;margin-left:48px;margin-right:48px;">
+        <el-table-column prop="prompt" label="Prompt"></el-table-column>
+        <el-table-column prop="value" label="Value"></el-table-column>
+    </el-table>
+    </el-col>
   </div>
 </template>
 
@@ -43,7 +39,8 @@ export default {
       result: '',
       stage: false,
       visible: false,
-      fileList: ''
+      fileList: '',
+      tableData: []
     }
   },
   beforeCreate() {
@@ -82,7 +79,7 @@ export default {
       var that = this
       var context = that.textarea
       var key = that.input
-      if (context === ''||key==='') {
+      if (context === '' || key === '') {
         this.$message({
           showClose: true,
           message: '输入内容不能为空',
@@ -96,8 +93,8 @@ export default {
           text: that.textarea,
           key: that.input
         }).then((response) => {
-          console.log(response.data)
-          that.result = response.data.correctionResults
+          that.result = response.data.correctionResults.toString()
+          that.tableData = response.data.correctionResults
           that.visible = true
           that.$message({
             showClose: true,
@@ -157,9 +154,10 @@ export default {
 
 <style scoped>
   .tip {
-    font-family: 宋体;
-	font-size: 18px;
-	font-weight: bold;
-	margin-bottom: 10px;
+    font-family: Helvetica Neue, Arial, Helvetica, sans-serif;
+	font-size: 14px;
+	font-weight:normal;
+	margin-top: 10px;
+  margin-bottom: 10px;
   }
 </style>

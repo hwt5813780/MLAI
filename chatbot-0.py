@@ -1,7 +1,11 @@
 import os
 import openai
-
-openai.api_key = "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"
+import socket
+import socks
+socks.set_default_proxy(socks.SOCKS5, "127.0.0.1", 10808)
+socket.socket = socks.socksocket
+ 
+openai.api_key = "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"
 print("if you want to stop the conversation, please input 'quit'") #提示想终止聊天时输入"quit"
 
 
