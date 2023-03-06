@@ -32,9 +32,6 @@
       <el-table v-loading="loading" id="excel_table" :data="tableData" style="width: 100%">
         <el-table-column prop="prompt" label="Prompt"></el-table-column>
         <el-table-column prop="value" label="Value"></el-table-column>
-        <el-table-column prop="prob" label="Prob"></el-table-column>
-        <el-table-column prop="start" label="Start"></el-table-column>
-        <el-table-column prop="end" label="End"></el-table-column>
       </el-table>
     </el-col>
     <el-col :span="10">
@@ -59,9 +56,6 @@ import axios from 'axios'
 import { saveAs } from 'file-saver'
 import { ref } from 'vue'
 import FileSaver from 'file-saver'
-// full import
-import * as XLSX from 'xlsx';
-// named imports
 import { write, utils } from 'xlsx';
 
 
