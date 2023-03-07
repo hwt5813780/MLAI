@@ -103,8 +103,10 @@ export default {
           text: that.textarea,
           key: that.input
         }).then((response) => {
+          console.log(response)
           that.result = response.data.correctionResults.toString()
           that.tableData = response.data.correctionResults
+          console.log(response.data.correctionResults)
           that.visible = true
           that.loading = false
           that.$message({
