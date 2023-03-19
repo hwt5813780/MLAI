@@ -2,7 +2,7 @@ import openai
 import requests
 import json
 
-openai.api_key = "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" # 将 YOUR_API_KEY 替换为您的实际 API 密钥
+openai.api_key = "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" # 将 YOUR_API_KEY 替换为您的实际 API 密钥
 
 # 设置API请求的URL和参数
 url = "https://api.openai.com/v1/chat/completions"
@@ -22,8 +22,8 @@ headers={"authority": "api.openai.com",
          "Authorization": f"Bearer {openai.api_key}"
 }
 
-proxies={'http': 'socks5://127.0.0.1:10808',
-         'https': 'socks5://127.0.0.1:10808'
+proxies={'http': 'http://127.0.0.1:7890',
+         'https': 'http://127.0.0.1:7890'
 }
 
 # 发送HTTP请求

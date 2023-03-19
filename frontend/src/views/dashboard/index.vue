@@ -23,6 +23,15 @@
           <el-button text style="width:100%" class="button" @click="goToPage1">开始使用</el-button>
         </div>
       </el-card>
+      <el-card class="card" @click="goToPage3">
+        <div class="card-image">
+          <img src="https://s1.ax1x.com/2023/03/07/ppZtCz4.png" alt="Image 2">
+        </div>
+        <div class="card-body" style="text-align: center;">
+          <div style="margin-bottom: 24px;font-weight: bold;">文档信息提取</div>
+          <el-button text style="width:100%" class="button" @click="goToPage1">开始使用</el-button>
+        </div>
+      </el-card>
     </div>
   </div>
 </template>
@@ -35,6 +44,9 @@ export default {
     },
     goToPage2() {
       this.$router.push({name: "Imagecsc"})
+    },
+    goToPage3() {
+      this.$router.push({name: "Documentcsc"})
     },
   },
 };

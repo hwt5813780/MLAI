@@ -63,6 +63,12 @@ export const constantRoutes = [
     meta: { title: '信息提取', icon: 'el-icon-s-help' },
     children: [
       {
+        path: 'documentcsc',
+        name: 'Documentcsc',
+        component: () => import('@/views/documentcsc/index'),
+        meta: { title: '文档提取'}
+      },
+      {
         path: 'imagecsc',
         name: 'Imagecsc',
         component: () => import('@/views/imagecsc/index'),
