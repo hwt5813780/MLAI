@@ -19,9 +19,10 @@ from PyPDF2 import PdfReader
 import docx
 import asyncio
 from paddleocr import PaddleOCR
+import json
 
 #  将 YOUR_API_KEY 替换为您的实际 API 密钥
-openai.api_key = "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"
+openai.api_key = "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"
 
 #  设置API请求的URL和参数
 url = "https://api.openai.com/v1/chat/completions"
@@ -58,6 +59,29 @@ async def TextErrorCorrection(document):
         print("异常信息：", e)
         raise HTTPException(status_code=500, detail=str(
             "请求失败，服务器端发生异常！异常信息提示：" + str(e)))
+
+def get_file_content(filePath):
+    with open(filePath, 'rb') as fp:
+        return fp.read()
+
+class CommonOcr(object):
+    def __init__(self, img_path):
+        self._app_id = '0647cbe4b4b53e45ce1386c673207f69'
+        self._secret_code = '0bf8e7c1eef74806987e4c5c5fe3615a'
+        self._img_path = img_path
+
+    def recognize(self):
+        # 通用文字识别
+        url = 'https://api.textin.com/ai/service/v2/recognize'
+        head = {}
+        try:
+            image = get_file_content(self._img_path)
+            head['x-ti-app-id'] = self._app_id
+            head['x-ti-secret-code'] = self._secret_code
+            result = requests.post(url, data=image, headers=head)
+            return result.text
+        except Exception as e:
+            return e
 
 
 async def DocRead(file, key, value):
@@ -131,30 +155,19 @@ async def ImageErrorCorrection(file, key, value):
         fout.write(imgBytes)
         fout.close()
         print("文件上传成功！")
-        if value == 1:
-            # ERNIE文本识别和提取
-            answer = docprompt({"doc": imgPath, "prompt": array})
-            # format数组
-            new_list = []
-            for item in answer:
-                result = item['result'][0]
-                new_item = {'prompt': item['prompt'], 'value': result['value'],
-                            'prob': result['prob'], 'start': result['start'], 'end': result['end']}
-                new_list.append(new_item)
-        else:
-            result = ocr.ocr(imgPath, cls=False)
-            txts = [detection[1][0]
-                    for line in result for detection in line]  # Nested loop added
-            all_context = "".join(txts)
-            print(all_context)
-            prompt = 'A：' + all_context + '//B：' + key
-            new_list = chat(prompt)
+        result = CommonOcr(imgPath) 
+        data = json.loads(result.recognize())
+        lines = data['result']['lines']
+        results = ' '.join(line['text'] for line in lines)
+        print(results)
+        prompt = 'A：' + results + '//B：' + key
+        new_list = chat(prompt)
 
         # 接口结果返回
         print(new_list)
-        results = {"message": "success",
+        results1 = {"message": "success",
                    "orcResult": "str(ocr_image_results[0])", "correctionResults": new_list}
-        return results
+        return results1
     # 异常处理
     except Exception as e:
         print("异常信息：", e)
@@ -178,7 +191,7 @@ def chat(prompt):  # 定义一个函数
                 }
         #  发送HTTP请求
         response = requests.post(url, headers=headers,
-                                 json=data, proxies=proxies)
+                                 json=data)
 
         #  解析响应并输出结果
         if response.status_code == 200:
@@ -187,7 +200,7 @@ def chat(prompt):  # 定义一个函数
             answer = json.loads(answer)
         else:
             raise Exception(
-                f"Request failed with status code {response.status_code}")
+                f"Request failed with status code {response.text}")
         return answer
 
     except Exception as exc:

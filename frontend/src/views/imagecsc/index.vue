@@ -125,13 +125,14 @@ export default {
     // 储存选择的file文件
     uploadImg(file) {
       this.fileData = file.file
-      console.log(file.file)
+      console.log(this.fileData)
       this.$message({
         showClose: true,
         message: '图片上传成功！',
         type: 'success'
       })
       this.imageUrl = URL.createObjectURL(file.file)
+      console.log(this.imageUrl)
     },
     // 保存识别结果
     saveResult() {

@@ -2,7 +2,7 @@ import openai
 import requests
 import json
 
-openai.api_key = "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" # 将 YOUR_API_KEY 替换为您的实际 API 密钥
+openai.api_key = "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" # 将 YOUR_API_KEY 替换为您的实际 API 密钥
 
 # 设置API请求的URL和参数
 url = "https://api.openai.com/v1/chat/completions"
@@ -27,10 +27,10 @@ proxies={'http': 'http://127.0.0.1:7890',
 }
 
 # 发送HTTP请求
-response = requests.post(url, headers=headers,json=data,proxies=proxies)
+response = requests.post(url, headers=headers,json=data)
 
 # 解析响应并输出结果
 if response.status_code == 200:
     print(response.json()["choices"][0]["message"]["content"].strip())
 else:
-    raise Exception(f"Request failed with status code {response.status_code}")
+    raise Exception(f"Request failed with status code {response.text}")

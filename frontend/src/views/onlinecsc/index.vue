@@ -13,11 +13,6 @@
       <el-button type="primary" @click="errorCorrect()" :loading='loading'>开始提取</el-button>
       <el-button type="basic"  style="margin-left:24px;margin-top:16px;" @click="handleDownload('text-demo')">导出Excel</el-button>
     </div>
-
-    <div v-show="visible" class="tip">
-      ChatGPT:
-    </div>
-    <el-input v-show="visible" v-model="result" type="textarea" :rows="11" />
     </el-col>
     <el-col :span="12">
     <el-table v-loading="loading" id="excel_table" :data="tableData" style="width: 100%;margin-left:48px;margin-right:48px;">
