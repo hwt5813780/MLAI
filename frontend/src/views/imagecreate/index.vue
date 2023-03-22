@@ -21,7 +21,7 @@
           >导出图片</el-button
         >
       </div>
-      <el-image style="padding-left: 48px" :src="imageUrl" >
+      <el-image style="padding-top: 48px" :src="imageUrl">
         <template #error>
           <div class="image-slot">
             <el-icon><icon-picture /></el-icon>

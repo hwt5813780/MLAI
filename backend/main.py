@@ -7,7 +7,6 @@ from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from sutil import cut_sent, replace_char, get_paragraphs_text
 import uvicorn
-from paddlenlp import Taskflow
 import time
 import openai
 import requests
@@ -15,29 +14,33 @@ import json
 from PyPDF2 import PdfReader
 import docx
 import asyncio
-from paddleocr import PaddleOCR
 import json
 
 #  将 YOUR_API_KEY 替换为您的实际 API 密钥
-openai.api_key = "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"
+openai.api_key = "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"
 
 #  设置API请求的URL和参数
 url = "https://api.openai.com/v1/chat/completions"
-
+url2 = "https://api.openai.com/v1/images/generations"
 
 headers = {"authority": "api.openai.com",
            "Content-Type": "application/json",
            "Authorization": f"Bearer {openai.api_key}"
            }
 
+proxies= {
+    "http":"http://127.0.0.1:7890",
+    "https":"http://127.0.0.1:7890",
+}
 
-async def ImageCreate(key):
+async def ImageCreate(document):
     try:
         # 获取要进行识别的文本内容
-        result = imagect(key)
+        key0 = document.key
+        result = imagect(key0)
         print(result)
         results = {"message": "success",
-                   "originalText": key, "correctionResults": result}
+                   "originalText": key0, "correctionResults": result}
         return results
     # 异常处理
     except Exception as e:
@@ -197,9 +200,8 @@ def chat(prompt):  # 定义一个函数
                 ]
                 }
         #  发送HTTP请求
-        response = requests.post(url, headers=headers,
-                                 json=data)
-
+        response = requests.post(url,headers=headers,json=data, proxies=proxies)
+        print(response.text)
         #  解析响应并输出结果
         if response.status_code == 200:
             answer = response.json()[
@@ -217,14 +219,16 @@ def chat(prompt):  # 定义一个函数
 def imagect(prompt):  # 定义一个函数
 
     try:
-        response = openai.Image.create(
-            prompt=prompt,
-            n=1,
-            size="1024x1024"
-        )
-        image_url = response['data'][0]['url']
-        print(image_url)
-        return image_url
+        data = {
+          "prompt": prompt,
+          "n": 1,
+          "size": "512x512"
+        }
+
+        response = requests.post(url2,headers=headers,json=data, proxies=proxies)
+        imageurl=response.json()["data"][0]["url"]
+        print(imageurl)
+        return imageurl
     except Exception as exc:
         # print(exc)  #需要打印出故障
         return "broken"
@@ -232,8 +236,6 @@ def imagect(prompt):  # 定义一个函数
 print("开始预热！")
 # 加载paddle模型
 print("ERNIE模型启动")
-docprompt = Taskflow("document_intelligence")
-ocr = PaddleOCR(use_angle_cls=False)
 
 
 # 创建一个 FastAPI「实例」，名字为app
