@@ -82,6 +82,27 @@ export const constantRoutes = [
       },
     ]
   },
+  {
+    path: '/aigc',
+    component: Layout,
+    redirect: '/aigc/imagecreate',
+    name: 'Aigc',
+    meta: { title: 'AI创作', icon: 'el-icon-s-help' },
+    children: [
+      {
+        path: 'imagecreate',
+        name: 'Imagecreate',
+        component: () => import('@/views/imagecreate/index'),
+        meta: { title: '图片生成'}
+      },
+      {
+        path: '404',
+        name: '404',
+        component: () => import('@/views/404'),
+        meta: { title: '视频生成'}
+      }
+    ]
+  },
 
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }

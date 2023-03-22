@@ -1,7 +1,7 @@
 import os
 import openai
 
-openai.api_key = "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"
+openai.api_key = "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"
 print("if you want to stop the conversation, please input 'quit'") #提示想终止聊天时输入"quit"
 
 

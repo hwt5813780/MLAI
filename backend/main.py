@@ -7,11 +7,8 @@ from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from sutil import cut_sent, replace_char, get_paragraphs_text
 import uvicorn
-import paddlehub as hub
-import cv2
 from paddlenlp import Taskflow
 import time
-import os
 import openai
 import requests
 import json
@@ -22,7 +19,7 @@ from paddleocr import PaddleOCR
 import json
 
 #  将 YOUR_API_KEY 替换为您的实际 API 密钥
-openai.api_key = "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"
+openai.api_key = "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"
 
 #  设置API请求的URL和参数
 url = "https://api.openai.com/v1/chat/completions"
@@ -33,10 +30,20 @@ headers = {"authority": "api.openai.com",
            "Authorization": f"Bearer {openai.api_key}"
            }
 
-proxies = {'http': 'http://127.0.0.1:7890',
-           'https': 'http://127.0.0.1:7890'
-           }
 
+async def ImageCreate(key):
+    try:
+        # 获取要进行识别的文本内容
+        result = imagect(key)
+        print(result)
+        results = {"message": "success",
+                   "originalText": key, "correctionResults": result}
+        return results
+    # 异常处理
+    except Exception as e:
+        print("异常信息：", e)
+        raise HTTPException(status_code=500, detail=str(
+            "请求失败，服务器端发生异常！异常信息提示：" + str(e)))
 
 async def TextErrorCorrection(document):
     try:
@@ -207,6 +214,20 @@ def chat(prompt):  # 定义一个函数
         # print(exc)  #需要打印出故障
         return "broken"
 
+def imagect(prompt):  # 定义一个函数
+
+    try:
+        response = openai.Image.create(
+            prompt=prompt,
+            n=1,
+            size="1024x1024"
+        )
+        image_url = response['data'][0]['url']
+        print(image_url)
+        return image_url
+    except Exception as exc:
+        # print(exc)  #需要打印出故障
+        return "broken"
 
 print("开始预热！")
 # 加载paddle模型
@@ -280,6 +301,21 @@ async def handle_request(file: UploadFile, key: str, value: int):
     print('创建事件循环成功')
     # 创建一个协程，用于处理当前请求
     coroutine = DocRead(file, key, value)
+    print('创建协程成功')
+    # 并行处理当前请求
+    result = await asyncio.gather(coroutine, return_exceptions=True)
+    print('并行处理当前请求成功')
+    print(result)
+    return result[0]
+
+@app.post("/v1/imageCreate/", status_code=200)
+# 定义路径操作函数，当接口被访问将调用该函数
+async def handle_request(document: Document):
+    # 创建一个事件循环
+    loop = asyncio.get_running_loop()
+    print('创建事件循环成功')
+    # 创建一个协程，用于处理当前请求
+    coroutine = ImageCreate(document)
     print('创建协程成功')
     # 并行处理当前请求
     result = await asyncio.gather(coroutine, return_exceptions=True)
